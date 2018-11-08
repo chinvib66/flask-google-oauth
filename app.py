@@ -276,6 +276,11 @@ def gcheck():
                   None, headers)
     try:
         res = urlopen(req)
+        userData = json.loads(res.read().decode('utf-8'))
+        userData = jsonify(userData)
+        session['username'] = 'trial'
+        session['logged_in'] = True
+        return redirect(url_for('index'))
     except URLError as e:
         if e.code == 401:
             # Unauthorized - bad token
@@ -285,8 +290,7 @@ def gcheck():
             #return res.read()
         flash('Some error occured', 'error')
         return redirect(url_for('login'))
-    userData = json.loads(res.read().decode('utf-8'))
-    userData = jsonify(userData)
+    
     # If user data exists in Our DB
     """cur = mysql.connection.cursor()
     # Get user by username
@@ -304,9 +308,7 @@ def gcheck():
         mysql.connection.commit()
         cur.close()
         flash('You are now registered and logged in', 'success')"""
-    session['username'] = 'trial'
-    session['logged_in'] = True
-    return redirect(url_for('index'))
+    
     
 
 @app.route('/glogin')
