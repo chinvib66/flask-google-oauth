@@ -327,9 +327,6 @@ def get_access_token():
     return session.get('access_token')
 
 
-
-
-
 if __name__ == '__main__':
     #app.secret_key='secret123456'
     app.run(debug=True)
