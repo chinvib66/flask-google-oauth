@@ -39,13 +39,6 @@
             "index": "pypi",
             "version": "==0.2.0"
         },
-        "flask-oauth": {
-            "hashes": [
-                "sha256:74eb646b3e0b3b63d4adc36024d163033fc6d01f32cf01f9e9b6c8b562313ec6"
-            ],
-            "index": "pypi",
-            "version": "==0.12"
-        },
         "gunicorn": {
             "hashes": [
                 "sha256:aa8e0b40b4157b36a5df5e599f45c9c76d6af43845ba3b3b0efe2c70473c2471",
