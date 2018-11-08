@@ -308,7 +308,8 @@ def gcheck():
         mysql.connection.commit()
         cur.close()
         flash('You are now registered and logged in', 'success')"""
-    
+    flash ('Something went wrong','danger')
+    return redirect(url_for('login'))
     
 
 @app.route('/glogin')
