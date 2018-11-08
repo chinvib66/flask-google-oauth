@@ -172,7 +172,7 @@ def is_logged_in(f):
 
 # Logout
 @app.route('/logout')
-@is_logged_in
+#@is_logged_in
 def logout():
     session.clear()
     flash('You are now logged out', 'success')
