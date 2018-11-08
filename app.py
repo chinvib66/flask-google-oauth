@@ -283,11 +283,11 @@ def gcheck():
             return redirect(url_for('login'))
             #return res.read()
         flash('Some error occured', 'error')
-        return redirect(url_for('glogin'))
+        return redirect(url_for('login'))
     userData = json.loads(res.read().decode('utf-8'))
     userData = jsonify(userData)
     # If user data exists in Our DB
-    cur = mysql.connection.cursor()
+    """cur = mysql.connection.cursor()
     # Get user by username
     result = cur.execute("SELECT * FROM users WHERE email = %s", [userData['email']])
     if result > 0:
@@ -297,15 +297,15 @@ def gcheck():
             session['id'] = data['id']
         else:
             session.pop('access_token', None)
-            """ Something went wrong. Register again."""
+            return redirect(url_for('login'))
     else:
         cur.execute("INSERT INTO users(name, email, username, password) VALUES(%s, %s, %s, %s)", (userData['given_name'], userData['email'], userData['email'], None))
         mysql.connection.commit()
         cur.close()
-        flash('You are now registered and logged in', 'success')
-    session['username'] = userData['email']
+        flash('You are now registered and logged in', 'success')"""
+    session['username'] = 'trial'
     session['logged_in'] = True
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('index'))
     
 
 @app.route('/glogin')
