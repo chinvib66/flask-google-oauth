@@ -9,12 +9,12 @@ import random
 import string
 import httplib2
 
-from ./flask_oauth import OAuth
+from flask_oauth import OAuth
 
 # app Init
 
 app = Flask(__name__)
-app.debug = DEBUG
+app.debug = True
 app.secret_key = ''.join(random.choice(string.ascii_uppercase + string.digits)
                         for x in range(32))
 
@@ -23,7 +23,6 @@ app.secret_key = ''.join(random.choice(string.ascii_uppercase + string.digits)
 GOOGLE_CLIENT_ID = '218171654775-qs4e5i7vb7bljb1k1vls4rdluqbepn2v.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'YzEs7EmNVK4zsTtH36J8m88w'
 REDIRECT_URI = '/gCallback'  # one of the Redirect URIs from Google APIs console
-DEBUG = True
 SECRET_KEY = app.secret_key
 
 # OAuth Init
@@ -273,8 +272,8 @@ def glogin():
 def authorized(resp):
     access_token = resp['access_token']
     session['access_token'] = access_token, ''
-    if access_token is None or 'logged_in' not in session:
-        return redirect(url_for('login'))
+    if access_token is None and 'logged_in' not in session:
+        return redirect(url_for('glogin'))
     access_token = access_token[0]
     from urllib.request import Request, urlopen, URLError
     headers = {'Authorization': 'OAuth '+access_token}
@@ -282,15 +281,12 @@ def authorized(resp):
                   None, headers)
     try:
         res = urlopen(req)
-    except (URLError, e):
-        if e.code == 401:
+    except URLError:
             # Unauthorized - bad token
-            session.pop('access_token', None)
-            flash('Bad access token', 'error')
-            return redirect(url_for('login'))
             #return res.read()
-        flash('Some error occured', 'error')
-        return redirect(url_for('login'))
+        #flash('Some error occured', 'error')
+        return URLError['reason']
+        #return redirect(url_for('glogin'))
     userData = json.loads(res.read().decode('utf-8'))
     userData = jsonify(userData)
     # If user data exists in Our DB
