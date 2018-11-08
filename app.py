@@ -9,7 +9,7 @@ import random
 import string
 import httplib2
 
-from flask_oauth import OAuth
+from oau.flask_oauth import OAuth
 
 # app Init
 
