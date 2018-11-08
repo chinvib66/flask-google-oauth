@@ -317,7 +317,7 @@ def glogin():
 @google.authorized_handler
 def authorized(resp):
     access_token = resp['access_token']
-    session['access_token'] = access_token
+    session['access_token'] = access_token, ''
     return redirect(url_for('gcheck'))
 
 
@@ -330,5 +330,5 @@ def get_access_token():
 
 
 if __name__ == '__main__':
-    app.secret_key='secret123456'
+    #app.secret_key='secret123456'
     app.run(debug=True)
