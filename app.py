@@ -61,6 +61,9 @@ mysql = MySQL(app)
 def index():
     return render_template('home.html')
 
+@app.route('/google2a51ef9bab7ff250.html')
+def googleverify():
+    return render_template('google2a51ef9bab7ff250.html')
 
 # About
 @app.route('/about')
