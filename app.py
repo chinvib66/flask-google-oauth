@@ -266,7 +266,7 @@ def delete_article(id):
 def gcheck():
     access_token = session.get('access_token')
     if access_token is None and 'logged_in' not in session:
-        return redirect(url_for('glogin'))
+        return redirect(url_for('login'))
     access_token = access_token[0]
     from urllib.request import Request, urlopen, URLError
     
@@ -317,7 +317,7 @@ def glogin():
 @google.authorized_handler
 def authorized(resp):
     access_token = resp['access_token']
-    session['access_token'] = access_token, ''
+    session['access_token'] = access_token
     return redirect(url_for('gcheck'))
 
 
