@@ -48,7 +48,7 @@ google = oauth.remote_app('google',
 # Config MySQL
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'abcd1234'
 app.config['MYSQL_DB'] = 'test'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # init MYSQL
@@ -262,31 +262,28 @@ def delete_article(id):
 
 # Google Login
 
-@app.route('/glogin')
-def glogin():
-    callback=url_for('authorized', _external=True)
-    return google.authorize(callback=callback)
-
-@app.route(REDIRECT_URI)
-@google.authorized_handler
-def authorized(resp):
-    access_token = resp['access_token']
-    session['access_token'] = access_token, ''
+@app.route('/gcheck')
+def gcheck():
+    access_token = session.get('access_token')
     if access_token is None and 'logged_in' not in session:
         return redirect(url_for('glogin'))
     access_token = access_token[0]
     from urllib.request import Request, urlopen, URLError
+    
     headers = {'Authorization': 'OAuth '+access_token}
     req = Request('https://www.googleapis.com/oauth2/v1/userinfo',
                   None, headers)
     try:
         res = urlopen(req)
-    except URLError:
+    except URLError as e:
+        if e.code == 401:
             # Unauthorized - bad token
+            session.pop('access_token', None)
+            flash(e.code, 'error')
+            return redirect(url_for('login'))
             #return res.read()
-        #flash('Some error occured', 'error')
-        return URLError['reason']
-        #return redirect(url_for('glogin'))
+        flash('Some error occured', 'error')
+        return redirect(url_for('glogin'))
     userData = json.loads(res.read().decode('utf-8'))
     userData = jsonify(userData)
     # If user data exists in Our DB
@@ -308,7 +305,20 @@ def authorized(resp):
         flash('You are now registered and logged in', 'success')
     session['username'] = userData['email']
     session['logged_in'] = True
-    return redirect(url_for('index'))
+    return redirect(url_for('dashboard'))
+    
+
+@app.route('/glogin')
+def glogin():
+    callback=url_for('authorized', _external=True)
+    return google.authorize(callback=callback)
+
+@app.route(REDIRECT_URI)
+@google.authorized_handler
+def authorized(resp):
+    access_token = resp['access_token']
+    session['access_token'] = access_token, ''
+    return redirect(url_for('gcheck'))
 
 
 @google.tokengetter
