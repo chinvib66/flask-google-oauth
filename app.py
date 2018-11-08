@@ -266,6 +266,7 @@ def delete_article(id):
 def gcheck():
     access_token = session.get('access_token')
     if access_token is None and 'logged_in' not in session:
+        flash('No access token','danger')
         return redirect(url_for('login'))
     access_token = access_token[0]
     from urllib.request import Request, urlopen, URLError
@@ -279,7 +280,7 @@ def gcheck():
         if e.code == 401:
             # Unauthorized - bad token
             session.pop('access_token', None)
-            flash(e.code, 'error')
+            flash(e.code, 'danger')
             return redirect(url_for('login'))
             #return res.read()
         flash('Some error occured', 'error')
